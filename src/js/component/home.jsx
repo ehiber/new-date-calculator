@@ -18,6 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { holidaysSpain } from "../assests/holidaysSpain";
+import { holidaysEurope } from "../assests/holidaysEurope";
 import rigoImage from "../../img/rigo-baby.jpg";
 import { Container, Grid } from "@mui/material";
 import { modulesFullStack } from "../assests/modulesFullStack";
@@ -65,7 +66,7 @@ const Home = () => {
     });
     const holidays = {
         spain: holidaysSpain,
-        europe: []
+        europe: holidaysEurope
     };
     const format = "DD/MM/YYYY";
 
