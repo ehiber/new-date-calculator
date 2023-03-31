@@ -20,6 +20,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { holidaysSpain } from "../assests/holidaysSpain";
 import rigoImage from "../../img/rigo-baby.jpg";
 import { Container, Grid } from "@mui/material";
+import { modulesFullStack } from "../assests/modulesFullStack";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -45,13 +46,19 @@ function createData(action, suggestDay) {
     return { action, suggestDay };
 }
 
+function createModuleData(moduleName, currentDay, suggestDay) {
+    return {moduleName, currentDay , suggestDay };
+}
+
 //create your first component
 const Home = () => {
     const [site, setSite] = useState("spain");
-    const [weeks, setWeeks] = useState(16);
+    const [weeks, setWeeks] = useState(18);
+    const [additionalDays, setAdditionalDays] = useState(0);
     const [schedule, setSchedule] = useState("mwf");
     const [dateBase, setDateBase] = useState(dayjs());
     const [dates, setDates] = useState([]);
+    const [modulesByWeeks, setModulesByWeeks] = useState([]);
     const [breakClasses, setBreakClasses] = useState({
         initial: dayjs("12/16/22"),
         ended: dayjs("01/03/23")
@@ -62,19 +69,24 @@ const Home = () => {
     };
     const format = "DD/MM/YYYY";
 
+    const modules = {
+        fullStack: modulesFullStack
+    };
+    
     useEffect(() => {
-        if(!dateBase.isSame(dayjs(),'day')){
+        if (!dateBase.isSame(dayjs(), "day")) {
             suggestingActionDates();
         }
-    }, [dateBase]);
+    }, [dateBase, site, weeks, schedule, additionalDays]);
 
     const suggestingActionDates = () => {
-        const daysCourse = weeks * 3;
+        const daysCourse = weeks * 3 + additionalDays;
         const scheduleDays = schedule === "mwf" ? [1, 3, 5] : [2, 4, 6];
         const diffBreakClasses = breakClasses.ended.diff(
             breakClasses.initial,
             "days"
         );
+        let currentModule = 2;
         let currentDate = dateBase;
         let day = 2;
         let suggestDays = [
@@ -86,16 +98,52 @@ const Home = () => {
             createData("NPS 2", dateBase.add(39, "days")),
             createData("NPS 3", dateBase.add(69, "days"))
         ];
-        while (day < daysCourse) {
+        let modulesByWeeksList = [];
+        
+        let auxWeekModuleList = [];
+        if(schedule === "mwf"){
+            auxWeekModuleList = [
+                createModuleData("",0,""),
+                createModuleData(modules.fullStack[currentModule-2].moduleName,modules.fullStack[currentModule-2].currentDay,currentDate),
+            ];
+
+        } else {
+            auxWeekModuleList = [
+                createModuleData("",0,""),
+                createModuleData("",0,""),
+                createModuleData(modules.fullStack[currentModule-2].moduleName,modules.fullStack[currentModule-2].currentDay,currentDate)
+            ];
+        }
+        
+        while (day <= daysCourse) {
             currentDate = currentDate.add(1, "day");
-            if (currentDate.isSame(breakClasses.initial,'day')) {
+            if (currentDate.isSame(breakClasses.initial, "day")) {
                 currentDate = currentDate.add(diffBreakClasses, "day");
             }
             if (holidays[site].includes(currentDate.format(format))) {
                 currentDate = currentDate.add(1, "day");
+                auxWeekModuleList.push(
+                    createModuleData("",0,"")
+                );
             }
             if (scheduleDays.includes(currentDate.day())) {
                 day++;
+                auxWeekModuleList.push(
+                    createModuleData(modules.fullStack[currentModule-1]?.moduleName,modules.fullStack[currentModule-1]?.currentDay,currentDate)
+                );
+                if (modules.fullStack[currentModule-1]?.currentDay < modules.fullStack[currentModule-1]?.duration){
+                    modules.fullStack[currentModule-1].currentDay = modules.fullStack[currentModule-1]?.currentDay + 1; 
+                } else {
+                    currentModule++;
+                }
+            } else {
+                auxWeekModuleList.push(
+                    createModuleData("",0,"")
+                );
+            }
+            if (auxWeekModuleList.length == 7){
+                modulesByWeeksList.push(auxWeekModuleList);
+                auxWeekModuleList = [];
             }
         }
         if (weeks === 18) {
@@ -111,8 +159,9 @@ const Home = () => {
             );
         }
         suggestDays.push(createData("Final Presentation", currentDate));
-
+        modulesByWeeksList.push(auxWeekModuleList);
         setDates(suggestDays);
+        setModulesByWeeks(modulesByWeeksList);
     };
 
     return (
@@ -182,7 +231,7 @@ const Home = () => {
                     </FormControl>
                     <LocalizationProvider
                         dateAdapter={AdapterDayjs}
-                        adapterLocale={"fr"}
+                        adapterLocale={"en"}
                     >
                         <DatePicker
                             label="Pick the start day of the cohort"
@@ -193,6 +242,26 @@ const Home = () => {
                             renderInput={(params) => <TextField {...params} />}
                         />
                     </LocalizationProvider>
+                    <FormControl>
+                        <InputLabel id="simple-select-label-additional-days">
+                            Additional Days
+                        </InputLabel>
+                        <Select
+                            labelId="simple-select-label-additional-days"
+                            id="simple-select-additional-days"
+                            value={additionalDays}
+                            label="Additional Days"
+                            onChange={(e) => setAdditionalDays(e.target.value)}
+                        >
+                            <MenuItem value={0}>0 Additional Day</MenuItem>
+                            <MenuItem value={1}>1 Additional Day</MenuItem>
+                            <MenuItem value={2}>2 Additional Days</MenuItem>
+                            <MenuItem value={3}>3 Additional Days</MenuItem>
+                            <MenuItem value={4}>4 Additional Days</MenuItem>
+                            <MenuItem value={5}>5 Additional Days</MenuItem>
+                            <MenuItem value={6}>6 Additional Days</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item sm={12} display="flex" justifyContent="center">
                     <TableContainer sx={{ maxWidth: 500 }} component={Paper}>
@@ -222,6 +291,58 @@ const Home = () => {
                                         </StyledTableCell>
                                     </StyledTableRow>
                                 ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
+
+                <Grid item sm={12} display="flex" justifyContent="center">
+                    <TableContainer sx={{ maxWidth: 1000 }} component={Paper}>
+                        <Table
+                            sx={{ maxWidth: 1000 }}
+                            aria-label="customized table"
+                        >
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>Week</StyledTableCell>
+                                    <StyledTableCell>Sunday</StyledTableCell>
+                                    <StyledTableCell>Monday</StyledTableCell>
+                                    <StyledTableCell>Thursday</StyledTableCell>
+                                    <StyledTableCell>Wednesday</StyledTableCell>
+                                    <StyledTableCell>Tuesday</StyledTableCell>
+                                    <StyledTableCell>Friday</StyledTableCell>
+                                    <StyledTableCell>Saturday</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {modulesByWeeks && modulesByWeeks.map((week,index) => {
+                                    return (<StyledTableRow key={index}>
+                                        <StyledTableCell
+                                                component="th"
+                                                scope="row"
+                                            >
+                                                {index + 1}
+                                            </StyledTableCell>
+                                        {week && week.map((module,index) =>    (
+                                            <StyledTableCell
+                                                key={index}
+                                                component="th"
+                                                scope="row"
+                                                align="center"
+                                            >
+                                                <p>
+                                                    {module.moduleName !== "" && module.moduleName}
+                                                </p>
+                                                <p>
+                                                    {module.suggestDay !== "" && module.suggestDay.format(format)}
+                                                </p>
+                                                <p>
+                                                    {module.currentDay > 1 && `Day: ${module.currentDay}`}
+                                                </p>
+                                            </StyledTableCell>
+                                        ))}
+                                    </StyledTableRow>);
+                                })}
                             </TableBody>
                         </Table>
                     </TableContainer>
