@@ -22,14 +22,30 @@ import { holidaysEurope } from "../assests/holidaysEurope";
 import rigoImage from "../../img/rigo-baby.jpg";
 import { Container, Grid } from "@mui/material";
 import { modulesFullStack } from "../assests/modulesFullStack";
+// import Pdf from "react-to-pdf";
+
+// const styles = StyleSheet.create({
+//     page: {
+//       flexDirection: 'row',
+//       backgroundColor: '#E4E4E4'
+//     },
+//     section: {
+//       margin: 10,
+//       padding: 10,
+//       flexGrow: 1
+//     }
+//   });
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    minWidth: "100px",
+    textAlignLast: "center",
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: theme.palette.common.black,
         color: theme.palette.common.white
     },
     [`&.${tableCellClasses.body}`]: {
-        fontSize: 14
+        fontSize: 14,
+        padding:"16px 0"
     }
 }));
 
@@ -64,6 +80,7 @@ const Home = () => {
         initial: dayjs("12/16/22"),
         ended: dayjs("01/03/23")
     });
+    const ref = React.createRef();
     const holidays = {
         spain: holidaysSpain,
         europe: holidaysEurope
@@ -105,7 +122,7 @@ const Home = () => {
         if(schedule === "mwf"){
             auxWeekModuleList = [
                 createModuleData("",0,""),
-                createModuleData(modules.fullStack[currentModule-2].moduleName,modules.fullStack[currentModule-2].currentDay,currentDate),
+                createModuleData(modules.fullStack[currentModule-2].moduleName,modules.fullStack[currentModule-2].currentDay,currentDate)
             ];
 
         } else {
@@ -115,7 +132,7 @@ const Home = () => {
                 createModuleData(modules.fullStack[currentModule-2].moduleName,modules.fullStack[currentModule-2].currentDay,currentDate)
             ];
         }
-        
+
         while (day <= daysCourse) {
             currentDate = currentDate.add(1, "day");
             if (currentDate.isSame(breakClasses.initial, "day")) {
@@ -160,6 +177,11 @@ const Home = () => {
             );
         }
         suggestDays.push(createData("Final Presentation", currentDate));
+        while (auxWeekModuleList.length !== 7){
+            auxWeekModuleList.push(
+                createModuleData("",0,"")
+            );
+        }
         modulesByWeeksList.push(auxWeekModuleList);
         setDates(suggestDays);
         setModulesByWeeks(modulesByWeeksList);
@@ -298,54 +320,65 @@ const Home = () => {
                 </Grid>
 
                 <Grid item sm={12} display="flex" justifyContent="center">
-                    <TableContainer sx={{ maxWidth: 1000 }} component={Paper}>
-                        <Table
-                            sx={{ maxWidth: 1000 }}
-                            aria-label="customized table"
-                        >
-                            <TableHead>
-                                <TableRow>
-                                    <StyledTableCell>Week</StyledTableCell>
-                                    <StyledTableCell>Sunday</StyledTableCell>
-                                    <StyledTableCell>Monday</StyledTableCell>
-                                    <StyledTableCell>Thursday</StyledTableCell>
-                                    <StyledTableCell>Wednesday</StyledTableCell>
-                                    <StyledTableCell>Tuesday</StyledTableCell>
-                                    <StyledTableCell>Friday</StyledTableCell>
-                                    <StyledTableCell>Saturday</StyledTableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {modulesByWeeks && modulesByWeeks.map((week,index) => {
-                                    return (<StyledTableRow key={index}>
+                    {/* <Pdf targetRef={ref} filename="code-example.pdf">
+                        {({ toPdf }) => <button onClick={toPdf}>Generate Pdf</button>}
+                    </Pdf> */}
+                    <TableContainer ref={ref} sx={{ maxWidth: 1000 }} component={Paper}>
+                    <Table
+                        sx={{ maxWidth: 1000 }}
+                        aria-label="customized table"
+                    >
+                        <TableHead>
+                            <TableRow>
+                                <StyledTableCell>Week</StyledTableCell>
+                                <StyledTableCell>Sunday</StyledTableCell>
+                                <StyledTableCell>Monday</StyledTableCell>
+                                <StyledTableCell>Thursday</StyledTableCell>
+                                <StyledTableCell>Wednesday</StyledTableCell>
+                                <StyledTableCell>Tuesday</StyledTableCell>
+                                <StyledTableCell>Friday</StyledTableCell>
+                                <StyledTableCell>Saturday</StyledTableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {modulesByWeeks && modulesByWeeks.map((week,index) => {
+                                return (
+                                    <StyledTableRow key={index}>
                                         <StyledTableCell
-                                                component="th"
-                                                scope="row"
-                                            >
-                                                {index + 1}
-                                            </StyledTableCell>
-                                        {week && week.map((module,index) =>    (
+                                            component="td"
+                                            // scope="row"
+                                        >
+                                            {index + 1}
+                                        </StyledTableCell>
+
+                                        {week && week.map((module,index) => (
                                             <StyledTableCell
                                                 key={index}
-                                                component="th"
-                                                scope="row"
+                                                component="td"
+                                                // scope="row"
                                                 align="center"
                                             >
-                                                <p>
-                                                    {module.moduleName !== "" && module.moduleName}
-                                                </p>
-                                                <p>
-                                                    {module.suggestDay !== "" && module.suggestDay.format(format)}
-                                                </p>
-                                                <p>
-                                                    {module.currentDay > 1 && `Day: ${module.currentDay}`}
-                                                </p>
+                                                { module?.moduleName ? (
+                                                    <>
+                                                        <p className="module">
+                                                            {module.moduleName !== "" && module.moduleName}
+                                                        </p>
+                                                        <p className="date">
+                                                            {module.suggestDay !== "" && module.suggestDay.format(format)}
+                                                        </p>
+                                                        <p className="current-day">
+                                                            {module.currentDay > 0 && `Day: ${module.currentDay}`}
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <i className="fa-solid fa-laptop-code table-icon"></i>                                                )
+                                                }
                                             </StyledTableCell>
                                         ))}
                                     </StyledTableRow>);
                                 })}
-                            </TableBody>
-                        </Table>
+                        </TableBody>
+                    </Table>
                     </TableContainer>
                 </Grid>
 

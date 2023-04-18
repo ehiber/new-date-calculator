@@ -145,7 +145,12 @@ export const modulesFullStack = [{
     },
     {
         moduleName: "Final Project",
-        duration: 16,
+        duration: 15,
+        currentDay: 1
+    },
+    {
+        moduleName: "Last Day: Project Showroom",
+        duration: 1,
         currentDay: 1
     }
 ];
