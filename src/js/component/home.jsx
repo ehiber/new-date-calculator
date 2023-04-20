@@ -3,10 +3,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -22,42 +20,23 @@ import { holidaysEurope } from "../assests/holidaysEurope";
 import rigoImage from "../../img/rigo-baby.jpg";
 import { Container, Grid } from "@mui/material";
 import { modulesFullStack } from "../assests/modulesFullStack";
-// import Pdf from "react-to-pdf";
+import PropTypes from "prop-types";
+import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { TableModulesByWeeks } from "./TableModulesByWeeks";
+import { StyledTableCell } from "./StyledTableCell";
+import { StyledTableRow } from "./StyledTableRow";
 
-// const styles = StyleSheet.create({
-//     page: {
-//       flexDirection: 'row',
-//       backgroundColor: '#E4E4E4'
-//     },
-//     section: {
-//       margin: 10,
-//       padding: 10,
-//       flexGrow: 1
-//     }
-//   });
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    minWidth: "100px",
-    textAlignLast: "center",
-    [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white
+const styles = StyleSheet.create({
+    page: {
+        flexDirection: 'row',
+        backgroundColor: '#E4E4E4'
     },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-        padding:"16px 0"
+    section: {
+        margin: 10,
+        padding: 10,
+        flexGrow: 1
     }
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-        backgroundColor: theme.palette.action.hover
-    },
-    // hide last border
-    "&:last-child td, &:last-child th": {
-        border: 0
-    }
-}));
+});
 
 function createData(action, suggestDay) {
     return { action, suggestDay };
@@ -90,7 +69,7 @@ const Home = () => {
     const modules = {
         fullStack: modulesFullStack
     };
-    
+
     useEffect(() => {
         if (!dateBase.isSame(dayjs(), "day")) {
             suggestingActionDates();
@@ -116,9 +95,11 @@ const Home = () => {
             createData("NPS 2", dateBase.add(39, "days")),
             createData("NPS 3", dateBase.add(69, "days"))
         ];
+
         let modulesByWeeksList = [];
-        
+
         let auxWeekModuleList = [];
+
         if(schedule === "mwf"){
             auxWeekModuleList = [
                 createModuleData("",0,""),
@@ -320,66 +301,7 @@ const Home = () => {
                 </Grid>
 
                 <Grid item sm={12} display="flex" justifyContent="center">
-                    {/* <Pdf targetRef={ref} filename="code-example.pdf">
-                        {({ toPdf }) => <button onClick={toPdf}>Generate Pdf</button>}
-                    </Pdf> */}
-                    <TableContainer ref={ref} sx={{ maxWidth: 1000 }} component={Paper}>
-                    <Table
-                        sx={{ maxWidth: 1000 }}
-                        aria-label="customized table"
-                    >
-                        <TableHead>
-                            <TableRow>
-                                <StyledTableCell>Week</StyledTableCell>
-                                <StyledTableCell>Sunday</StyledTableCell>
-                                <StyledTableCell>Monday</StyledTableCell>
-                                <StyledTableCell>Thursday</StyledTableCell>
-                                <StyledTableCell>Wednesday</StyledTableCell>
-                                <StyledTableCell>Tuesday</StyledTableCell>
-                                <StyledTableCell>Friday</StyledTableCell>
-                                <StyledTableCell>Saturday</StyledTableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {modulesByWeeks && modulesByWeeks.map((week,index) => {
-                                return (
-                                    <StyledTableRow key={index}>
-                                        <StyledTableCell
-                                            component="td"
-                                            // scope="row"
-                                        >
-                                            {index + 1}
-                                        </StyledTableCell>
-
-                                        {week && week.map((module,index) => (
-                                            <StyledTableCell
-                                                key={index}
-                                                component="td"
-                                                // scope="row"
-                                                align="center"
-                                            >
-                                                { module?.moduleName ? (
-                                                    <>
-                                                        <p className="module">
-                                                            {module.moduleName !== "" && module.moduleName}
-                                                        </p>
-                                                        <p className="date">
-                                                            {module.suggestDay !== "" && module.suggestDay.format(format)}
-                                                        </p>
-                                                        <p className="current-day">
-                                                            {module.currentDay > 0 && `Day: ${module.currentDay}`}
-                                                        </p>
-                                                    </>
-                                                ) : (
-                                                    <i className="fa-solid fa-laptop-code table-icon"></i>                                                )
-                                                }
-                                            </StyledTableCell>
-                                        ))}
-                                    </StyledTableRow>);
-                                })}
-                        </TableBody>
-                    </Table>
-                    </TableContainer>
+                    <TableModulesByWeeks modulesByWeeks={modulesByWeeks} format={format}/>
                 </Grid>
 
                 <Grid item sm={12}>
@@ -391,3 +313,8 @@ const Home = () => {
 };
 
 export default Home;
+
+TableModulesByWeeks.propTypes = {
+	modulesByWeeks: PropTypes.array.isRequired,
+    format: PropTypes.string.isRequired
+};
