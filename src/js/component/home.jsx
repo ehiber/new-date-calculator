@@ -58,8 +58,8 @@ const Home = () => {
     const [dates, setDates] = useState([]);
     const [modulesByWeeks, setModulesByWeeks] = useState([]);
     const [breakClasses, setBreakClasses] = useState({
-        initial: dayjs("12/22/23"),
-        ended: dayjs("01/06/24")
+        initial: dayjs("12/23/23"),
+        ended: dayjs("01/07/24")
     });
     const ref = React.createRef();
     const holidays = {
