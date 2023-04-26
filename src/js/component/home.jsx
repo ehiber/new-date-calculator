@@ -21,49 +21,9 @@ import rigoImage from "../../img/rigo-baby.jpg";
 import { Container, Grid } from "@mui/material";
 import { modulesFullStack } from "../assests/modulesFullStack";
 import PropTypes from "prop-types";
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import { TableModulesByWeeks } from "./TableModulesByWeeks";
 import { StyledTableCell } from "./StyledTableCell";
 import { StyledTableRow } from "./StyledTableRow";
-
-const styles = StyleSheet.create({
-    page: {
-        flexDirection: "row",
-        backgroundColor: "#E4E4E4",
-        width: "1500px",
-		overflow: "visible"
-    },
-    section: {
-        margin: 10,
-        padding: 10,
-        flexGrow: 1
-    },
-    tableContainer: {
-        width: "1500px"
-    },
-    table: {
-        width: "1500px"
-    },
-    tableRow: {
-        flexDirection: "row"
-    },
-    tableCell: {
-        padding: 10,
-        flexGrow: 1
-    },
-    tableHeaderCell: {
-        backgroundColor: "#ccc",
-        fontWeight: "bold"
-    },
-    module: {
-        marginBottom: 5
-    },
-    date: {
-        marginBottom: 5
-    },
-    currentDay: {},
-    tableIcon: {}
-});
 
 function createData(action, suggestDay) {
     return { action, suggestDay };
