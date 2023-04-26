@@ -21,23 +21,48 @@ import rigoImage from "../../img/rigo-baby.jpg";
 import { Container, Grid } from "@mui/material";
 import { modulesFullStack } from "../assests/modulesFullStack";
 import PropTypes from "prop-types";
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import { TableModulesByWeeks } from "./TableModulesByWeeks";
 import { StyledTableCell } from "./StyledTableCell";
 import { StyledTableRow } from "./StyledTableRow";
-import { PDF } from "./PDF";
-import { PDFViewer } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
     page: {
-        flexDirection: 'row',
-        backgroundColor: '#E4E4E4'
+        flexDirection: "row",
+        backgroundColor: "#E4E4E4",
+        width: "1500px",
+		overflow: "visible"
     },
     section: {
         margin: 10,
         padding: 10,
         flexGrow: 1
-    }
+    },
+    tableContainer: {
+        width: "1500px"
+    },
+    table: {
+        width: "1500px"
+    },
+    tableRow: {
+        flexDirection: "row"
+    },
+    tableCell: {
+        padding: 10,
+        flexGrow: 1
+    },
+    tableHeaderCell: {
+        backgroundColor: "#ccc",
+        fontWeight: "bold"
+    },
+    module: {
+        marginBottom: 5
+    },
+    date: {
+        marginBottom: 5
+    },
+    currentDay: {},
+    tableIcon: {}
 });
 
 function createData(action, suggestDay) {
@@ -45,7 +70,7 @@ function createData(action, suggestDay) {
 }
 
 function createModuleData(moduleName, currentDay, suggestDay) {
-    return {moduleName, currentDay , suggestDay };
+    return { moduleName, currentDay, suggestDay };
 }
 
 //create your first component
@@ -61,7 +86,7 @@ const Home = () => {
         initial: dayjs("12/23/23"),
         ended: dayjs("01/07/24")
     });
-    const ref = React.createRef();
+
     const holidays = {
         spain: holidaysSpain,
         europe: holidaysEurope
@@ -73,10 +98,14 @@ const Home = () => {
     };
 
     useEffect(() => {
+        setDateBase(dayjs());
+    }, [site, weeks, schedule, additionalDays]);
+
+    useEffect(() => {
         if (!dateBase.isSame(dayjs(), "day")) {
             suggestingActionDates();
         }
-    }, [dateBase, site, weeks, schedule, additionalDays]);
+    }, [dateBase]);
 
     const suggestingActionDates = () => {
         const daysCourse = weeks * 3 + additionalDays;
@@ -102,17 +131,26 @@ const Home = () => {
 
         let auxWeekModuleList = [];
 
-        if(schedule === "mwf"){
-            auxWeekModuleList = [
-                createModuleData("",0,""),
-                createModuleData(modules.fullStack[currentModule-2].moduleName,modules.fullStack[currentModule-2].currentDay,currentDate)
-            ];
+        let auxCurrentDayModule = 1;
 
+        if (schedule === "mwf") {
+            auxWeekModuleList = [
+                createModuleData("", 0, ""),
+                createModuleData(
+                    modules.fullStack[currentModule - 2].moduleName,
+                    modules.fullStack[currentModule - 2].currentDay,
+                    currentDate
+                )
+            ];
         } else {
             auxWeekModuleList = [
-                createModuleData("",0,""),
-                createModuleData("",0,""),
-                createModuleData(modules.fullStack[currentModule-2].moduleName,modules.fullStack[currentModule-2].currentDay,currentDate)
+                createModuleData("", 0, ""),
+                createModuleData("", 0, ""),
+                createModuleData(
+                    modules.fullStack[currentModule - 2].moduleName,
+                    modules.fullStack[currentModule - 2].currentDay,
+                    currentDate
+                )
             ];
         }
 
@@ -120,32 +158,36 @@ const Home = () => {
             currentDate = currentDate.add(1, "day");
             if (currentDate.isSame(breakClasses.initial, "day")) {
                 currentDate = currentDate.add(diffBreakClasses, "day");
-                // auxWeekModuleList.push(
-                //     createModuleData("",0,"")
-                // );
             }
             if (holidays[site].includes(currentDate.format(format))) {
                 currentDate = currentDate.add(1, "day");
-                auxWeekModuleList.push(
-                    createModuleData("",0,"")
-                );
+                auxWeekModuleList.push(createModuleData("", 0, ""));
+            }
+            if (currentDate.diff(breakClasses.ended, "days") === 1) {
+                auxWeekModuleList.push(createModuleData("", 0, ""));
             }
             if (scheduleDays.includes(currentDate.day())) {
                 day++;
                 auxWeekModuleList.push(
-                    createModuleData(modules.fullStack[currentModule-1]?.moduleName,modules.fullStack[currentModule-1]?.currentDay,currentDate)
+                    createModuleData(
+                        modules.fullStack[currentModule - 1]?.moduleName,
+                        auxCurrentDayModule,
+                        currentDate
+                    )
                 );
-                if (modules.fullStack[currentModule-1]?.currentDay < modules.fullStack[currentModule-1]?.duration){
-                    modules.fullStack[currentModule-1].currentDay = modules.fullStack[currentModule-1]?.currentDay + 1; 
+                if (
+                    auxCurrentDayModule <
+                    modules.fullStack[currentModule - 1]?.duration
+                ) {
+                    auxCurrentDayModule++;
                 } else {
                     currentModule++;
+                    auxCurrentDayModule = 1;
                 }
             } else {
-                auxWeekModuleList.push(
-                    createModuleData("",0,"")
-                );
+                auxWeekModuleList.push(createModuleData("", 0, ""));
             }
-            if (auxWeekModuleList.length == 7){
+            if (auxWeekModuleList.length == 7) {
                 modulesByWeeksList.push(auxWeekModuleList);
                 auxWeekModuleList = [];
             }
@@ -163,10 +205,8 @@ const Home = () => {
             );
         }
         suggestDays.push(createData("Final Presentation", currentDate));
-        while (auxWeekModuleList.length !== 7){
-            auxWeekModuleList.push(
-                createModuleData("",0,"")
-            );
+        while (auxWeekModuleList.length !== 7) {
+            auxWeekModuleList.push(createModuleData("", 0, ""));
         }
         modulesByWeeksList.push(auxWeekModuleList);
         setDates(suggestDays);
@@ -304,21 +344,11 @@ const Home = () => {
                         </Table>
                     </TableContainer>
                 </Grid>
-
                 <Grid item sm={12} display="flex" justifyContent="center">
-                    <PDF
-                        PDFDocument={ () => {
-                            return (
-                                <div>
-                                    Hola
-                                </div>
-                            );
-                        }}
+                    <TableModulesByWeeks
+                        modulesByWeeks={modulesByWeeks}
+                        format={format}
                     />
-                    <TableModulesByWeeks modulesByWeeks={modulesByWeeks} format={format}/>
-                    {/* <PDFViewer>
-                        <TableModulesByWeeks modulesByWeeks={modulesByWeeks} format={format}/>
-                    </PDFViewer> */}
                 </Grid>
 
                 <Grid item sm={12}>
@@ -332,10 +362,6 @@ const Home = () => {
 export default Home;
 
 TableModulesByWeeks.propTypes = {
-	modulesByWeeks: PropTypes.array.isRequired,
+    modulesByWeeks: PropTypes.array.isRequired,
     format: PropTypes.string.isRequired
-};
-
-PDF.propTypes = {
-    PDFDocument: PropTypes.node.isRequired
 };
