@@ -120,9 +120,9 @@ const Home = () => {
             currentDate = currentDate.add(1, "day");
             if (currentDate.isSame(breakClasses.initial, "day")) {
                 currentDate = currentDate.add(diffBreakClasses, "day");
-                auxWeekModuleList.push(
-                    createModuleData("",0,"")
-                );
+                // auxWeekModuleList.push(
+                //     createModuleData("",0,"")
+                // );
             }
             if (holidays[site].includes(currentDate.format(format))) {
                 currentDate = currentDate.add(1, "day");
