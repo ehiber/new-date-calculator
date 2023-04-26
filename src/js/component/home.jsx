@@ -25,6 +25,8 @@ import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import { TableModulesByWeeks } from "./TableModulesByWeeks";
 import { StyledTableCell } from "./StyledTableCell";
 import { StyledTableRow } from "./StyledTableRow";
+import { PDF } from "./PDF";
+import { PDFViewer } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
     page: {
@@ -301,7 +303,19 @@ const Home = () => {
                 </Grid>
 
                 <Grid item sm={12} display="flex" justifyContent="center">
+                    <PDF
+                        PDFDocument={ () => {
+                            return (
+                                <div>
+                                    Hola
+                                </div>
+                            );
+                        }}
+                    />
                     <TableModulesByWeeks modulesByWeeks={modulesByWeeks} format={format}/>
+                    {/* <PDFViewer>
+                        <TableModulesByWeeks modulesByWeeks={modulesByWeeks} format={format}/>
+                    </PDFViewer> */}
                 </Grid>
 
                 <Grid item sm={12}>
@@ -317,4 +331,8 @@ export default Home;
 TableModulesByWeeks.propTypes = {
 	modulesByWeeks: PropTypes.array.isRequired,
     format: PropTypes.string.isRequired
+};
+
+PDF.propTypes = {
+    PDFDocument: PropTypes.node.isRequired
 };
