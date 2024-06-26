@@ -40,11 +40,11 @@ export const TableModulesByWeeks = ({ modulesByWeeks, format }) => {
     };
 
     return (
-		<>
+		<div style={{display:'flex',flexDirection:'column'}}>
 
-			{/* <Grid>
+			<Grid>
 				<Button onClick={()=> downloadPdf()}>Download PDF</Button>
-			</Grid> */}
+			</Grid>
 
 			<TableContainer ref={reportTemplateRef} sx={{ maxWidth: 1000 }} component={Paper}>
 				<Table sx={{ maxWidth: 1000 }} aria-label="customized table">
@@ -109,7 +109,7 @@ export const TableModulesByWeeks = ({ modulesByWeeks, format }) => {
 					</TableBody>
 				</Table>
 			</TableContainer>
-		</>
+		</div>
 
 
     );
