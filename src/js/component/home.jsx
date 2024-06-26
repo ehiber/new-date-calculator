@@ -43,8 +43,8 @@ const Home = () => {
     const [dates, setDates] = useState([]);
     const [modulesByWeeks, setModulesByWeeks] = useState([]);
     const [breakClasses, setBreakClasses] = useState({
-        initial: dayjs("12/23/23"),
-        ended: dayjs("01/07/24")
+        initial: dayjs("22/12/24"),
+        ended: dayjs("06/01/25")
     });
 
     const holidays = {
@@ -54,7 +54,7 @@ const Home = () => {
     const format = "DD/MM/YYYY";
 
     const modules = {
-        fullStack: modulesFullStack
+        fullStack: modulesFullStack(additionalDays)
     };
 
     useEffect(() => {
@@ -79,12 +79,12 @@ const Home = () => {
         let day = 2;
         let suggestDays = [
             createData("Start Date", dateBase),
-            createData("Create Meet Event", dateBase.subtract(15, "days")),
-            createData("Create YT Playlist", dateBase.subtract(15, "days")),
-            createData("Welcome Message", dateBase.subtract(7, "days")),
-            createData("NPS 1", dateBase.add(9, "days")),
-            createData("NPS 2", dateBase.add(39, "days")),
-            createData("NPS 3", dateBase.add(69, "days"))
+            // createData("Create Meet Event", dateBase.subtract(15, "days")),
+            // createData("Create YT Playlist", dateBase.subtract(15, "days")),
+            // createData("Welcome Message", dateBase.subtract(7, "days")),
+            // createData("NPS 1", dateBase.add(9, "days")),
+            // createData("NPS 2", dateBase.add(39, "days")),
+            // createData("NPS 3", dateBase.add(69, "days"))
         ];
 
         let modulesByWeeksList = [];
@@ -119,7 +119,7 @@ const Home = () => {
             if (currentDate.isSame(breakClasses.initial, "day")) {
                 currentDate = currentDate.add(diffBreakClasses, "day");
             }
-            if (holidays[site].includes(currentDate.format(format))) {
+            if (holidays[site].includes(currentDate.format(format)) && scheduleDays.includes(currentDate.day())) {
                 currentDate = currentDate.add(1, "day");
                 auxWeekModuleList.push(createModuleData("", 0, ""));
             }
@@ -147,25 +147,25 @@ const Home = () => {
             } else {
                 auxWeekModuleList.push(createModuleData("", 0, ""));
             }
-            if (auxWeekModuleList.length == 7) {
+            if (auxWeekModuleList.length > 6) {
                 modulesByWeeksList.push(auxWeekModuleList);
                 auxWeekModuleList = [];
             }
         }
-        if (weeks === 18) {
-            suggestDays.push(
-                createData("NPS 4", currentDate.subtract(28, "days"))
-            );
-            suggestDays.push(
-                createData("NPS 5", currentDate.subtract(7, "days"))
-            );
-        } else {
-            suggestDays.push(
-                createData("NPS 4", currentDate.subtract(7, "days"))
-            );
-        }
+        // if (weeks === 18) {
+        //     suggestDays.push(
+        //         createData("NPS 4", currentDate.subtract(28, "days"))
+        //     );
+        //     suggestDays.push(
+        //         createData("NPS 5", currentDate.subtract(7, "days"))
+        //     );
+        // } else {
+        //     suggestDays.push(
+        //         createData("NPS 4", currentDate.subtract(7, "days"))
+        //     );
+        // }
         suggestDays.push(createData("Final Presentation", currentDate));
-        while (auxWeekModuleList.length !== 7) {
+        while (auxWeekModuleList.length < 7) {
             auxWeekModuleList.push(createModuleData("", 0, ""));
         }
         modulesByWeeksList.push(auxWeekModuleList);

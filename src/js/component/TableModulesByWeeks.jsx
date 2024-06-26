@@ -17,9 +17,9 @@ export const TableModulesByWeeks = ({ modulesByWeeks, format }) => {
         { title: "Week", field: "Week" },
         { title: "Sunday", field: "Sunday" },
         { title: "Monday", field: "Monday" },
-        { title: "Thursday", field: "Thursday" },
-        { title: "Wednesday", field: "Wednesday" },
         { title: "Tuesday", field: "Tuesday" },
+        { title: "Wednesday", field: "Wednesday" },
+        { title: "Thursday", field: "Thursday" },
         { title: "Friday", field: "Friday" },
         { title: "Saturday", field: "Saturday" }
     ];
@@ -42,9 +42,9 @@ export const TableModulesByWeeks = ({ modulesByWeeks, format }) => {
     return (
 		<>
 
-			<Grid>
+			{/* <Grid>
 				<Button onClick={()=> downloadPdf()}>Download PDF</Button>
-			</Grid>
+			</Grid> */}
 
 			<TableContainer ref={reportTemplateRef} sx={{ maxWidth: 1000 }} component={Paper}>
 				<Table sx={{ maxWidth: 1000 }} aria-label="customized table">
@@ -64,11 +64,11 @@ export const TableModulesByWeeks = ({ modulesByWeeks, format }) => {
 									<StyledTableRow key={index}>
 										<StyledTableCell
 											component="td"
-											// scope="row"
+											scope="row"
 										>
 											{index + 1}
 										</StyledTableCell>
-
+										{console.log(week)}
 										{week &&
 											week.map((module, index) => (
 												<StyledTableCell
@@ -98,7 +98,8 @@ export const TableModulesByWeeks = ({ modulesByWeeks, format }) => {
 															</p>
 														</>
 													) : (
-														<i className="fa-solid fa-laptop-code table-icon"/>
+														// <i className="fa-solid fa-laptop-code table-icon"/>
+														<p> - </p>
 													)}
 												</StyledTableCell>
 											))}

@@ -1,4 +1,4 @@
-export const modulesFullStack = [{
+export const modulesFullStack = (additionalDays) => [{
     moduleName: "HTML/CSS",
     duration: 1
 },
@@ -116,7 +116,7 @@ export const modulesFullStack = [{
 },
 {
     moduleName: "Final Project",
-    duration: 15
+    duration: 15 + additionalDays
 },
 {
     moduleName: "Last Day: Project Showroom",
