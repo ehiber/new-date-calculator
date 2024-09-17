@@ -68,7 +68,6 @@ export const TableModulesByWeeks = ({ modulesByWeeks, format }) => {
 										>
 											{index + 1}
 										</StyledTableCell>
-										{console.log(week)}
 										{week &&
 											week.map((module, index) => (
 												<StyledTableCell

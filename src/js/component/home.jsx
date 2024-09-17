@@ -42,10 +42,10 @@ const Home = () => {
     const [dateBase, setDateBase] = useState(dayjs());
     const [dates, setDates] = useState([]);
     const [modulesByWeeks, setModulesByWeeks] = useState([]);
-    const [breakClasses, setBreakClasses] = useState({
-        initial: dayjs("22/12/24"),
-        ended: dayjs("06/01/25")
-    });
+    const breakClasses = {
+        initial: dayjs("12/22/2024"),
+        ended: dayjs("01/06/2025")
+    };
 
     const holidays = {
         spain: holidaysSpain,
@@ -116,6 +116,10 @@ const Home = () => {
 
         while (day <= daysCourse) {
             currentDate = currentDate.add(1, "day");
+            console.log((currentDate.isSame(breakClasses.initial, "date")))
+            console.log(breakClasses.initial)
+            console.log(currentDate)
+
             if (currentDate.isSame(breakClasses.initial, "day")) {
                 currentDate = currentDate.add(diffBreakClasses, "day");
             }
