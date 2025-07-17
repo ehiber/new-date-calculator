@@ -1,9 +1,6 @@
 {
     "name": "react-hello",
     "version": "1.0.1",
-    "engines": {
-        "node": "18.x"
-    },
     "description": "",
     "main": "index.js",
     "scripts": {
