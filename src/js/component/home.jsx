@@ -16,10 +16,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { holidaysSpain } from "../assests/holidaysSpain";
-import { holidaysEurope } from "../assests/holidaysEurope";
 import rigoImage from "../../img/rigo-baby.jpg";
 import { Container, Grid } from "@mui/material";
 import { modulesFullStack } from "../assests/modulesFullStack";
+import { modulesDataScience } from "../assests/modulesDataScience";
+import { modulesCibersecurity } from "../assests/modulesCibersecurity";
 import PropTypes from "prop-types";
 import { TableModulesByWeeks } from "./TableModulesByWeeks";
 import { StyledTableCell } from "./StyledTableCell";
@@ -35,31 +36,30 @@ function createModuleData(moduleName, currentDay, suggestDay) {
 
 //create your first component
 const Home = () => {
-    const [site, setSite] = useState("spain");
-    const [weeks, setWeeks] = useState(18);
+    const [courseType, setCourseType] = useState("fullStack");
     const [additionalDays, setAdditionalDays] = useState(0);
     const [schedule, setSchedule] = useState("mwf");
     const [dateBase, setDateBase] = useState(dayjs());
     const [dates, setDates] = useState([]);
     const [modulesByWeeks, setModulesByWeeks] = useState([]);
     const breakClasses = {
-        initial: dayjs("12/22/2024"),
-        ended: dayjs("01/06/2025")
+        initial: dayjs("12/22/2025"),
+        ended: dayjs("01/06/2026")
     };
 
-    const holidays = {
-        spain: holidaysSpain,
-        europe: holidaysEurope
-    };
     const format = "DD/MM/YYYY";
 
     const modules = {
-        fullStack: modulesFullStack(additionalDays)
+        fullStack: modulesFullStack(additionalDays),
+        dataScience: modulesDataScience(additionalDays),
+        cibersecurity: modulesCibersecurity(additionalDays)
     };
+
+    const weeks = courseType === "fullStack" ? 18 : 16;
 
     useEffect(() => {
         setDateBase(dayjs());
-    }, [site, weeks, schedule, additionalDays]);
+    }, [courseType, schedule, additionalDays]);
 
     useEffect(() => {
         if (!dateBase.isSame(dayjs(), "day")) {
@@ -77,15 +77,12 @@ const Home = () => {
         let currentModule = 2;
         let currentDate = dateBase;
         let day = 2;
-        let suggestDays = [
-            createData("Start Date", dateBase),
-            // createData("Create Meet Event", dateBase.subtract(15, "days")),
-            // createData("Create YT Playlist", dateBase.subtract(15, "days")),
-            // createData("Welcome Message", dateBase.subtract(7, "days")),
-            // createData("NPS 1", dateBase.add(9, "days")),
-            // createData("NPS 2", dateBase.add(39, "days")),
-            // createData("NPS 3", dateBase.add(69, "days"))
-        ];
+        let suggestDays = courseType === "cibersecurity" ? [
+            createData("Start Date", dateBase)
+        ] : [
+            createData("Phase 1 Start Date", dateBase.subtract(14, "day")),
+            createData("Phase 2 Start Date", dateBase)
+       ];
 
         let modulesByWeeksList = [];
 
@@ -97,8 +94,8 @@ const Home = () => {
             auxWeekModuleList = [
                 createModuleData("", 0, ""),
                 createModuleData(
-                    modules.fullStack[currentModule - 2].moduleName,
-                    modules.fullStack[currentModule - 2].currentDay,
+                    modules[courseType][currentModule - 2].moduleName,
+                    modules[courseType][currentModule - 2].currentDay,
                     currentDate
                 )
             ];
@@ -107,8 +104,8 @@ const Home = () => {
                 createModuleData("", 0, ""),
                 createModuleData("", 0, ""),
                 createModuleData(
-                    modules.fullStack[currentModule - 2].moduleName,
-                    modules.fullStack[currentModule - 2].currentDay,
+                    modules[courseType][currentModule - 2].moduleName,
+                    modules[courseType][currentModule - 2].currentDay,
                     currentDate
                 )
             ];
@@ -123,7 +120,7 @@ const Home = () => {
             if (currentDate.isSame(breakClasses.initial, "day")) {
                 currentDate = currentDate.add(diffBreakClasses, "day");
             }
-            if (holidays[site].includes(currentDate.format(format)) && scheduleDays.includes(currentDate.day())) {
+            if (holidaysSpain.includes(currentDate.format(format)) && scheduleDays.includes(currentDate.day())) {
                 currentDate = currentDate.add(1, "day");
                 auxWeekModuleList.push(createModuleData("", 0, ""));
             }
@@ -134,14 +131,14 @@ const Home = () => {
                 day++;
                 auxWeekModuleList.push(
                     createModuleData(
-                        modules.fullStack[currentModule - 1]?.moduleName,
+                        modules[courseType][currentModule - 1]?.moduleName,
                         auxCurrentDayModule,
                         currentDate
                     )
                 );
                 if (
                     auxCurrentDayModule <
-                    modules.fullStack[currentModule - 1]?.duration
+                    modules[courseType][currentModule - 1]?.duration
                 ) {
                     auxCurrentDayModule++;
                 } else {
@@ -194,33 +191,19 @@ const Home = () => {
                 </Grid>
                 <Grid item sm={12} display="flex" justifyContent="space-evenly">
                     <FormControl>
-                        <InputLabel id="simple-select-label-site">
-                            Site
+                        <InputLabel id="simple-select-label-course-type">
+                            Course Type
                         </InputLabel>
                         <Select
-                            labelId="simple-select-label-site"
-                            id="simple-select-site"
-                            value={site}
-                            label="Site"
-                            onChange={(e) => setSite(e.target.value)}
+                            labelId="simple-select-label-course-type"
+                            id="simple-select-course-type"
+                            value={courseType}
+                            label="Course Type"
+                            onChange={(e) => setCourseType(e.target.value)}
                         >
-                            <MenuItem value="spain">Spain</MenuItem>
-                            <MenuItem value="europe">Europe</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <FormControl>
-                        <InputLabel id="simple-select-label-weeks">
-                            Weeks
-                        </InputLabel>
-                        <Select
-                            labelId="simple-select-label-weeks"
-                            id="simple-select-weeks"
-                            value={weeks}
-                            label="Weeks"
-                            onChange={(e) => setWeeks(e.target.value)}
-                        >
-                            <MenuItem value={18}>18 Weeks</MenuItem>
-                            <MenuItem value={16}>16 Weeks</MenuItem>
+                            <MenuItem value="fullStack">Full Stack</MenuItem>
+                            <MenuItem value="dataScience">Data Science</MenuItem>
+                            <MenuItem value="cibersecurity">Cibersecurity</MenuItem>
                         </Select>
                     </FormControl>
                     <FormControl>

@@ -4,7 +4,7 @@ export const modulesFullStack = (additionalDays) => [{
 },
 {
     moduleName: "Bootstrap",
-    duration: 2
+    duration: 1
 },
 {
     moduleName: "HTML Forms",
@@ -28,15 +28,11 @@ export const modulesFullStack = (additionalDays) => [{
 },
 {
     moduleName: "Excuse Generator",
-    duration: 1
+    duration: 2
 },
 {
     moduleName: "Project Revisions",
     duration: 1
-},
-{
-    moduleName: "Domain Name Generator",
-    duration: 2
 },
 {
     moduleName: "Conditional Profile Card",
@@ -56,7 +52,7 @@ export const modulesFullStack = (additionalDays) => [{
 },
 {
     moduleName: "Landing Page with React",
-    duration: 2
+    duration: 1
 },
 {
     moduleName: "Simple Counter",
@@ -75,15 +71,23 @@ export const modulesFullStack = (additionalDays) => [{
     duration: 2
 },
 {
-    moduleName: "Star wars blog reading list",
-    duration: 1
-},
-{
-    moduleName: "Star Wars blog - Live Coding",
+    moduleName: "Contact List",
     duration: 2
 },
 {
-    moduleName: "Contact List",
+    moduleName: "Star wars blog reading list",
+    duration: 2
+},
+{
+    moduleName: "Intro to Python",
+    duration: 2
+},
+{
+    moduleName: "Your first API",
+    duration: 1
+},
+{
+    moduleName: "Data Structures",
     duration: 1
 },
 {
@@ -91,28 +95,17 @@ export const modulesFullStack = (additionalDays) => [{
     duration: 1
 },
 {
-    moduleName: "Building Starwars Data Model",
+    moduleName: "Build a StarWars Model",
     duration: 1
 },
+
 {
-    moduleName: "Intro to Python",
-    duration: 1
-},
-{
-    moduleName: "Star Wars blog - Building endpoints",
-    duration: 2
+    moduleName: "Building endpoints",
+    duration: 3
 },
 {
     moduleName: "Authentication JWT",
-    duration: 1
-},
-{
-    moduleName: "Family API",
-    duration: 1
-},
-{
-    moduleName: "User Stories",
-    duration: 1
+    duration: 2
 },
 {
     moduleName: "Final Project",
